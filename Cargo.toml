@@ -1,6 +1,6 @@
 [package]
 name = "file-sorter"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2024"
 description = "A utility for sorting files based on file name rules into directories"
 license = "MIT"
