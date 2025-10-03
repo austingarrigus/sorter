@@ -2,6 +2,7 @@
 #![feature(iterator_try_collect)]
 use anyhow::{Result, bail};
 use clap::Parser;
+use regex::Regex;
 use std::fs::DirEntry;
 use std::ops::Deref;
 use std::path::PathBuf;
@@ -13,7 +14,7 @@ struct Args {
     path: Option<PathBuf>,
 }
 
-struct SortRules(Vec<(String, String)>);
+struct SortRules(Vec<(Regex, PathBuf)>);
 
 impl SortRules {
     fn sort(&self) -> Result<()> {
@@ -21,14 +22,14 @@ impl SortRules {
         for (pat, to) in self.iter() {
             for from in files
                 .iter()
-                .filter(|f| f.path().is_file() && f.path().display().to_string().contains(pat))
+                .filter(|f| f.path().is_file() && pat.is_match(&f.path().display().to_string()))
             {
                 let from = from.path();
                 let name = from
                     .file_name()
                     .expect("no file name even though we verified is file");
                 fs::create_dir_all(to)?;
-                let to = PathBuf::from(to).join(name);
+                let to = to.join(name);
                 println!("Moving: {} -> {}", name.display(), to.display());
                 fs::rename(from, to)?;
             }
@@ -46,14 +47,14 @@ impl TryFrom<String> for SortRules {
             let Some((k, v)) = l.split_once("->") else {
                 bail!("malformed sort file at: {l}");
             };
-            out.push((k.trim().to_string(), v.trim().to_string()));
+            out.push((Regex::new(k.trim())?, PathBuf::from(v.trim())));
         }
         Ok(SortRules(out))
     }
 }
 
 impl Deref for SortRules {
-    type Target = Vec<(String, String)>;
+    type Target = Vec<(Regex, PathBuf)>;
 
     fn deref(&self) -> &Self::Target {
         &self.0
