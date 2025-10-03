@@ -11,12 +11,12 @@ identifying regex -> path/to/destination/directory
 another string -> another/destination/directory
 ```
 
-Then, run `sorter` in that directory, or with that directory as an argument:
+Then, run `file-sorter` in that directory, or with that directory as an argument:
 
 ```
-$ sorter Downloads
+$ file-sorter Downloads
 Moved: file with identifying regex.txt -> path/to/destination/directory/file with identifying regex.txt
-Moved: another file with identifying regex.md -> path/to/destination/directory/another file with identifying regex.md
+Moved: another file with identifying regex.md -> another/destination/directory/another file with identifying regex.md
 ```
 
 Each line of the sort file is split at the `->`, then the whitespace at the beginning and end of both parts is trimmed.
