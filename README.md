@@ -23,3 +23,10 @@ Each line of the sort file is split at the `->`, then the whitespace at the begi
 If a destination directory does not exist, it will be created.
 If a file is not matched, it will not be touched.
 If the `.sort` file does not exist, the program will crash.
+
+# Installation
+Install with Cargo.
+
+```
+$ cargo install file-sorter
+```
