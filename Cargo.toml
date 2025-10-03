@@ -4,6 +4,7 @@ version = "1.0.0"
 edition = "2024"
 description = "A utility for sorting files based on file name rules into directories"
 license = "MIT"
+repository = "https://github.com/austingarrigus/sorter"
 
 [dependencies]
 anyhow = "1.0.100"
