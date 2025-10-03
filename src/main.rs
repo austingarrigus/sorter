@@ -1,5 +1,4 @@
 #![warn(clippy::pedantic)]
-#![feature(iterator_try_collect)]
 use anyhow::{Result, bail};
 use clap::Parser;
 use regex::Regex;
@@ -18,7 +17,8 @@ struct SortRules(Vec<(Regex, PathBuf)>);
 
 impl SortRules {
     fn sort(&self) -> Result<()> {
-        let files: Vec<DirEntry> = fs::read_dir(".")?.try_collect()?;
+        let files: Vec<DirEntry> =
+            fs::read_dir(".")?.collect::<std::result::Result<Vec<_>, _>>()?;
         for (pat, to) in self.iter() {
             for from in files
                 .iter()
