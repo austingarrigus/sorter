@@ -1,5 +1,5 @@
 #![warn(clippy::pedantic)]
-use anyhow::{Result, bail};
+use anyhow::{Context, Result, bail};
 use clap::Parser;
 use regex::Regex;
 use std::fs::DirEntry;
@@ -66,6 +66,6 @@ fn main() -> Result<()> {
     if let Some(path) = args.path {
         env::set_current_dir(path)?;
     }
-    let sort_rules: SortRules = fs::read_to_string(".sort")?.try_into()?;
+    let sort_rules: SortRules = fs::read_to_string(".sort").context(".sort file does not exist in directory")?.try_into()?;
     sort_rules.sort()
 }
