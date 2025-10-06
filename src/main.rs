@@ -20,10 +20,9 @@ impl SortRules {
         let files: Vec<DirEntry> =
             fs::read_dir(".")?.collect::<std::result::Result<Vec<_>, _>>()?;
         for (pat, to) in self.iter() {
-            for from in files
-                .iter()
-                .filter(|f| f.path().is_file() && pat.is_match(&f.path().display().to_string()))
-            {
+            for from in files.iter().filter(|f| {
+                f.path().is_file() && pat.is_match(&f.file_name().display().to_string())
+            }) {
                 let from = from.path();
                 let name = from
                     .file_name()
