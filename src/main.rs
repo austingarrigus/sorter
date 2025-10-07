@@ -19,16 +19,16 @@ impl SortRules {
     fn sort(&self) -> Result<()> {
         let files: Vec<DirEntry> =
             fs::read_dir(".")?.collect::<std::result::Result<Vec<_>, _>>()?;
-        for (pat, to) in self.iter() {
-            for from in files.iter().filter(|f| {
-                f.path().is_file() && pat.is_match(&f.file_name().display().to_string())
-            }) {
-                let from = from.path();
-                let name = from
-                    .file_name()
-                    .expect("no file name even though we verified is file");
+        for f in &files {
+            let from = f.path();
+            let name = f.file_name();
+            if from.is_file()
+                && let Some((_, to)) = self.iter().find(|(pat, _)| {
+                    pat.is_match(name.to_str().expect("non-unicode data in file name"))
+                })
+            {
                 fs::create_dir_all(to)?;
-                let to = to.join(name);
+                let to = to.join(&name);
                 println!("Moving: {} -> {}", name.display(), to.display());
                 fs::rename(from, to)?;
             }
